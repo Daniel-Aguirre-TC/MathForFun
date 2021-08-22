@@ -6,24 +6,30 @@ namespace MathForFun
 {
     class GameManager
     {
-        enum Difficulty { Easy, Medium, Hard };
-        Difficulty currentDifficulty = Difficulty.Easy;
+        // difficulty will adjust how often the number range increases, and by how much.
+        enum Difficulty {None, Easy, Medium, Hard };
+        // setting difficulty to none until player selects a difficulty.
+        Difficulty currentDifficulty = Difficulty.None;
+
+        // 
         bool stillPlaying;
-        public bool StillPlaying
-        {
-            get { return stillPlaying; }
-            set { stillPlaying = value; }
-        }
+
+        // numbers below are starting point for min/max values of opperands. These are increased throughout gameplay.
         int firstMinNumber = 0;
         int firstMaxNumber = 1;
         int secondMinNumber = 1;
-        int secondMaxNumber = 5;       
+        int secondMaxNumber = 5;   
+        // stores the correct answer for the current question
         int currentAnswer;
+        // correctCount is used to display score. Increases by one per correct answer.
         int correctCount;
 
+        // GameManager Constructor is called in Main at startup. 
         public GameManager()
         {         
-            StillPlaying = true;
+            // stillPlaying bool to keep gameplay loop running in while statement below.
+            stillPlaying = true;
+            ShowLogo();
             GreetPlayer();
             while(stillPlaying)
             {
@@ -31,8 +37,6 @@ namespace MathForFun
                 CheckAnswer();
             }
         }
-
-        // if false game over and show score then offer to play again (only logic needed is resetting score)
 
         void CheckAnswer()
         {
@@ -45,16 +49,19 @@ namespace MathForFun
                     // increase correctCount, notify player, offer continue.
                     correctCount++;
                     Console.WriteLine($"\nYou answered correctly! Your score is now: {correctCount}.");
-                    IncreaseMaxNumber();
+                    IncreaseNumberRange();
                     OfferContinue();
                 }
+                // else means answer given was incorrect
                 else
                 {
+                    // notify player they lost and offer continue.
                     Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n{QuestionGenerator.numOne} + {QuestionGenerator.numTwo} = {currentAnswer}.\n");
-                    Console.WriteLine($"Your final score is {correctCount}\n");
+                    Console.WriteLine($"Your final score is {correctCount}.\n");
                     OfferContinue();
                 }
             }
+            // else the parse failed so CheckAnswer again to get a new entry
             else
             {
                 Console.WriteLine($"Invalid entry. Please enter a number.");
@@ -66,56 +73,64 @@ namespace MathForFun
             Console.WriteLine("Do you wish to continue playing? Please enter y/n\n");
             switch (Console.ReadKey().KeyChar)
             {
+                // if yes, spacebar, or enter key then continue
                 case 'y':
                 case (char)ConsoleKey.Enter:
                 case (char)ConsoleKey.Spacebar:
                     break;
+                // if n then set stillPlaying to false to break gameplay loop.
                 case 'n':
                     stillPlaying = false;
                     break;
+                // if anything else then invalid entry and offer continue again.
                 default:
                     Console.WriteLine("\n\nInvalid Entry. Please Select 'y' or 'n'.\n");
                     OfferContinue();
                     break;
             }
         }
-        void IncreaseMaxNumber()
+        void IncreaseNumberRange()
         {
+            // increase range based on difficulty
             switch (currentDifficulty)
             {
+                // if easy increase number ranges as shown below every turn and every four turns.
                 case Difficulty.Easy:
                     firstMaxNumber++;
-                    if (correctCount % 3 == 0)
+                    if (correctCount % 4 == 0)
                     {
                         firstMinNumber++;
                         secondMinNumber++;
                         secondMaxNumber++; 
                     }
                     break;
+                // if medium increase number ranges as shown below every turn and every three turns
                 case Difficulty.Medium:
-                    firstMaxNumber++;
                     firstMinNumber++;
+                    firstMaxNumber++;
                     if (correctCount % 3 == 0)
                     {
-                        firstMaxNumber++;
                         firstMinNumber++;
+                        firstMaxNumber++;
                         secondMinNumber+=2;
                         secondMaxNumber+=2;
                     }
                     break;
+                // if hard increase number ranges as shown below every turn and every 2 turns
                 case Difficulty.Hard:
-                    firstMaxNumber++;
+                    firstMaxNumber+=2;
                     firstMinNumber++;
                     secondMinNumber++;
-                    secondMaxNumber++;
-                    if (correctCount % 3 == 0)
+                    secondMaxNumber+=2;
+                    if (correctCount % 2 == 0)
                     {
-                        firstMaxNumber+=3;
-                        firstMinNumber+=3;
-                        secondMinNumber += 3;
-                        secondMaxNumber += 3;
+                        firstMaxNumber+=4;
+                        firstMinNumber+=2;
+                        secondMinNumber += 2;
+                        secondMaxNumber += 4;
                     }
                     break;
+                // default shouldn't be called, if so then difficulty was never set.
                 default:
                     Console.WriteLine("Error Increasing Difficulty - No Match For Current Difficulty.");
                     Console.ReadLine();
@@ -130,28 +145,53 @@ namespace MathForFun
             Console.WriteLine($"\n\nYou have selected the difficulty: {currentDifficulty}\nPress any key to continue.");
             Console.ReadKey();
         }
-
         void OfferDifficulty()
         {
-            Console.WriteLine("Please select a difficulty by entering the\ncorresponding number.\n\n1) Easy\n2) Medium\n3) Hard\n");
-            switch(Console.ReadKey().KeyChar)
+            // use while loop to offer difficulty again if player inputs invalid entry. This prevents user from continuing without setting a difficulty.
+            while (currentDifficulty == Difficulty.None)
             {
-                case '1':
-                    currentDifficulty = Difficulty.Easy;
-                    break;
-                case '2':
-                    currentDifficulty = Difficulty.Medium;
-                    break;
-                case '3':
-                    currentDifficulty = Difficulty.Hard;
-                    break;
-                default:
-                    Console.WriteLine("Invalid response, Please enter a number 1-3.");
-                    Console.ReadKey();
-                    Console.Clear();
-                    OfferDifficulty();
-                break;
+                Console.WriteLine("Please select a difficulty by entering the\ncorresponding number.\n\n1) Easy\n2) Medium\n3) Hard\n");
+                switch (Console.ReadKey().KeyChar)
+                {
+                    case '1':
+                        currentDifficulty = Difficulty.Easy;
+                        break;
+                    case '2':
+                        currentDifficulty = Difficulty.Medium;
+                        break;
+                    case '3':
+                        currentDifficulty = Difficulty.Hard;
+                        break;
+                    // if default, invalid response, so no difficulty set which will cause while loop to re-run.
+                    default:
+                        Console.WriteLine("Invalid response, Please enter a number 1-3.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
             }
+        }
+        void ShowLogo()
+        {
+            // Logo, cause why not?
+
+            Console.WriteLine("\n\n______    ______   ____ ");
+            Console.WriteLine("|    |    |       |    \\");
+            Console.WriteLine("|    |    |       |     \\");
+            Console.WriteLine("------    |-----  |     |");
+            Console.WriteLine("|     \\   |       |     |");
+            Console.WriteLine("|      \\  |_____  |_____|\n");
+
+            Console.WriteLine("______    ______   _____   _     ");
+            Console.WriteLine("|    |    |     |    |    | \\   |");
+            Console.WriteLine("|    |    |     |    |    |  \\  |");
+            Console.WriteLine("------    |-----|    |    |   \\ |");
+            Console.WriteLine("|     \\   |     |    |    |    \\|");
+            Console.WriteLine("|      \\  |     |  __|__  |     |");
+
+            Console.WriteLine("\n\nPress Any Key To Begin.");
+            Console.ReadKey();
+            Console.Clear();
         }
 
     }

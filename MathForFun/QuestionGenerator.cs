@@ -19,11 +19,15 @@ namespace MathForFun
             new string ("This one's a doozy!"),
             new string ("You're for real a genius if you can answer this."),
             new string ("There's no way you can answer this one right."),
-            new string ("Fifty bucks says you get this one wrong!"),
+            new string ("Fifty bucks says you get this one wrong! (jk)"),
             new string ("Here's a hard one!"),
-            new string ("Google told me you couldn't answer this without them"),
+            new string ("Google told me you couldn't answer this\nwithout them"),
             new string ("Did you know you could use enter to\ncontinue after a question?"),
-            new string ("If you get this one right then I know\nyou're using a calculator")
+            new string ("This next one is really gunna stump you!"),
+            new string ("Not even Chuck Norris could answer this one!"),
+            new string ("I doubt you're gunna get this, but give\nit your best shot!"),
+            new string ("If you get this one right then I know\nyou're using a calculator"),
+            new string ("Thanks for playing my game! - Daniel")
         };
 
         static public int NewProblem(int numOneMinValue, int numOneMaxValue, int numTwoMinValue, int numTwoMaxValue)
