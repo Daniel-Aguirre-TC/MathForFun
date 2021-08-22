@@ -1,0 +1,12 @@
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\bin\Release\netcoreapp3.1\MathForFun.exe
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\bin\Release\netcoreapp3.1\MathForFun.deps.json
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\bin\Release\netcoreapp3.1\MathForFun.runtimeconfig.json
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\bin\Release\netcoreapp3.1\MathForFun.runtimeconfig.dev.json
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\bin\Release\netcoreapp3.1\MathForFun.dll
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\bin\Release\netcoreapp3.1\MathForFun.pdb
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.AssemblyInfoInputs.cache
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.AssemblyInfo.cs
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.csproj.CoreCompileInputs.cache
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.dll
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.pdb
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.genruntimeconfig.cache

@@ -52,8 +52,8 @@ namespace MathForFun
                     scoreBooster += Convert.ToInt32(Math.Floor((QuestionGenerator.numOne + QuestionGenerator.numTwo) / 10m));
                     // increase correctCount, notify player, offer continue.
                     correctCount++;
-
-                    Console.WriteLine($"\nYou answered correctly! Your score is now: {CalculateScore()}.\n\nYour total correct answers so far is {correctCount}\n");
+                    // Notify user their answer was correct, increase Range of possible opperands for next question, offer continue playing
+                    Console.WriteLine($"\nYou answered correctly! Your score is now: {CalculateScore()}.\n\nYour total correct answers so far is {correctCount}\n");              
                     IncreaseNumberRange();
                     OfferContinue();
                 }
@@ -78,6 +78,7 @@ namespace MathForFun
         }
         int CalculateScore()
         {
+            // calculate score based on difficulty.
             switch (currentDifficulty)
             {
                 case Difficulty.Easy:
@@ -172,9 +173,9 @@ namespace MathForFun
         }
         void OfferQuestionType()
         {
-            Console.WriteLine("Please select a category by entering the\ncorresponding number.\n\n1) Addition\n2) Subtraction\n");
             while (questionType == QuestionGenerator.QuestionType.None)
             {
+                Console.WriteLine("Please select a category by entering the\ncorresponding number.\n\n1) Addition\n2) Subtraction\n");
                 switch (Console.ReadKey().KeyChar)
                 {
                     case '1':
@@ -192,7 +193,6 @@ namespace MathForFun
             }
             Console.WriteLine($"\n\nYou have selected the category: {questionType}\nPress any key to continue.");
         }
-
         void OfferDifficulty()
         {
             // use while loop to offer difficulty again if player inputs invalid entry. This prevents user from continuing without setting a difficulty.

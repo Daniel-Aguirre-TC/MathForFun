@@ -1,0 +1,5 @@
+C:\Users\Second-Desktop\PublishedRepos\MathForFun.exe
+C:\Users\Second-Desktop\PublishedRepos\MathForFun.dll
+C:\Users\Second-Desktop\PublishedRepos\MathForFun.deps.json
+C:\Users\Second-Desktop\PublishedRepos\MathForFun.runtimeconfig.json
+C:\Users\Second-Desktop\PublishedRepos\MathForFun.pdb
