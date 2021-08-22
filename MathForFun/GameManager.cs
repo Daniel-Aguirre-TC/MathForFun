@@ -58,6 +58,8 @@ namespace MathForFun
                     // notify player they lost and offer continue.
                     Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n\n{QuestionGenerator.numOne} + {QuestionGenerator.numTwo} = {currentAnswer}.\n");
                     Console.WriteLine($"Your final score is {correctCount}.\n");
+                    // reset correctCount to 0 if got wrong answer.
+                    correctCount = 0;
                     OfferContinue();
                 }
             }
