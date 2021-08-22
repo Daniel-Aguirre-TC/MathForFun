@@ -6,6 +6,9 @@ namespace MathForFun
 {
     public static class QuestionGenerator
     {
+        public enum QuestionType { None, Addition, Subtraction }
+        // char opperator is updated when DisplayQuestion() is called.
+        public static char opperator;
         // numOne and numTwo for current problem
         public static int numOne = 0;
         public static int numTwo = 0;
@@ -33,41 +36,81 @@ namespace MathForFun
             new string ("If you get this one right then I know that you\nyou're using a calculator"),
             new string ("Thanks for playing my game! - Daniel")
         };
-        // used list is filled up with questionText List, then each time an option is used it's removed. When the list is empty it will re-fill then remove last used.
+        // unusedQuestionText is filled up with questionText List, then each time an option is used it's removed. When the list is empty it will re-fill then remove last used.
         static List<string> unusedQuestionText = new List<string>()
         {
             new string ("Just because this is the first question doesn't\nmean that it'll be easy!")
         };
 
-        static public int NewProblem(int numOneMinValue, int numOneMaxValue, int numTwoMinValue, int numTwoMaxValue)
+        static public int NewProblem(QuestionType category, int numOneMinValue, int numOneMaxValue, int numTwoMinValue, int numTwoMaxValue)
         {
-            SetNumbers(numOneMinValue, numOneMaxValue, numTwoMinValue, numTwoMaxValue);
-            DisplayProblem();
-            return numOne + numTwo;       
+            SetNumbers(category, numOneMinValue, numOneMaxValue, numTwoMinValue, numTwoMaxValue);
+            DisplayProblem(category);
+            switch(category)
+            {
+                case QuestionType.Addition:
+                    return numOne + numTwo;
+                case QuestionType.Subtraction:
+                    return numOne - numTwo;
+                default:
+                    Console.WriteLine("Error with returning CorrectAnswer from NewProblem() due to no matching QuestionType. Will Return 0.");
+                    return 0;
+            }   
         }
 
-        static void DisplayProblem()
+        static void DisplayProblem(QuestionType questionType)
         {
             Console.Clear();
             // Display a randomly selected string (other than first question) above math problem.
             DisplayRandomText();
-            Console.WriteLine($"\nWhat is {numOne} + {numTwo} = ?\n");
+            switch(questionType)
+            {
+                case QuestionType.Addition:
+                    opperator = '+';
+                    break;
+                case QuestionType.Subtraction:
+                    opperator = '-';
+                    break;
+                default:
+                    Console.WriteLine("Error with determining opperator. No valid QuestionType submitted for DisplayProblem(). Returning +");
+                    opperator = '+';
+                    break;
+            }
+            
+            Console.WriteLine($"\nWhat is {numOne} {opperator} {numTwo} = ?\n");
         }
 
-        static void SetNumbers(int firstNumberMin, int firstNumberMax, int secondNumberMin, int secondNumberMax)
+        static void SetNumbers(QuestionType questionType, int firstNumberMin, int firstNumberMax, int secondNumberMin, int secondNumberMax)
         {
             var random = new Random();
             numOne = random.Next(firstNumberMin, firstNumberMax);
             numTwo = random.Next(secondNumberMin, secondNumberMax);
-            if ((numOne == lastNumOne && numTwo == lastNumTwo) || (numOne == lastNumTwo && numTwo == lastNumOne))
+            // if addition problem is the same as the previous problem.
+            switch(questionType)
             {
-                SetNumbers(firstNumberMin, firstNumberMax, secondNumberMin, secondNumberMax);
+                case QuestionType.Addition:
+                    if ((numOne == lastNumOne && numTwo == lastNumTwo) || (numOne == lastNumTwo && numTwo == lastNumOne))
+                    {
+                        SetNumbers(QuestionType.Addition, firstNumberMin, firstNumberMax, secondNumberMin, secondNumberMax);
+                    }
+                    else
+                    {
+                        lastNumOne = numOne;
+                        lastNumTwo = numTwo;
+                    }
+                    break;
+                case QuestionType.Subtraction:
+                    // prevent duplicate question from last one, and prevent negative answers.
+                    if ((numTwo > numOne) || (numOne == lastNumOne && numTwo == lastNumTwo) || (numOne - numTwo == lastNumOne - lastNumTwo))
+                    { SetNumbers(QuestionType.Subtraction, firstNumberMin, firstNumberMax, secondNumberMin, secondNumberMax); }
+                    else
+                    {
+                        lastNumOne = numOne;
+                        lastNumTwo = numTwo;
+                    }
+                    break;
             }
-            else
-            {
-                lastNumOne = numOne;
-                lastNumTwo = numTwo;
-            }
+
         }
 
         static void DisplayRandomText()

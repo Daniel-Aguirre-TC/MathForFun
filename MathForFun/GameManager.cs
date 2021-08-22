@@ -4,17 +4,18 @@ using System.Text;
 
 namespace MathForFun
 {
-    class GameManager
+    public class GameManager
     {
         // difficulty will adjust how often the number range increases, and by how much. Score is also dependent on difficulty.
         enum Difficulty {None, Easy, Medium, Hard };
-        // setting difficulty to none until player selects a difficulty.
+        // setting difficulty and questionType to none until player selects a difficulty/type.
         Difficulty currentDifficulty = Difficulty.None;
+        QuestionGenerator.QuestionType questionType = QuestionGenerator.QuestionType.None;
         // stillPlaying is used to keep while loop running for gameplay
         bool stillPlaying;
         // numbers below are starting point for min/max values of opperands. These are increased throughout gameplay.
         int firstMinNumber = 0;
-        int firstMaxNumber = 1;
+        int firstMaxNumber = 5;
         int secondMinNumber = 1;
         int secondMaxNumber = 5;   
         // stores the correct answer for the current question
@@ -34,7 +35,7 @@ namespace MathForFun
             GreetPlayer();
             while(stillPlaying)
             {
-                currentAnswer = QuestionGenerator.NewProblem(firstMinNumber, firstMaxNumber, secondMinNumber, secondMaxNumber);
+                currentAnswer = QuestionGenerator.NewProblem(questionType, firstMinNumber, firstMaxNumber, secondMinNumber, secondMaxNumber);
                 CheckAnswer();
             }
         }
@@ -47,7 +48,8 @@ namespace MathForFun
                 // if result is correct
                 if (result == currentAnswer)
                 {
-                    scoreBooster += Convert.ToInt32(Math.Floor(currentAnswer / 10m));
+                    // score booster is based on numOne + numTwo so that subtraction score increases with higher numbers even if difference is  low number.
+                    scoreBooster += Convert.ToInt32(Math.Floor((QuestionGenerator.numOne + QuestionGenerator.numTwo) / 10m));
                     // increase correctCount, notify player, offer continue.
                     correctCount++;
 
@@ -59,10 +61,11 @@ namespace MathForFun
                 else
                 {
                     // notify player they lost and offer continue.
-                    Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n\n{QuestionGenerator.numOne} + {QuestionGenerator.numTwo} = {currentAnswer}.\n");
+                    Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n\n{QuestionGenerator.numOne} {QuestionGenerator.opperator} {QuestionGenerator.numTwo} = {currentAnswer}.\n");
                     Console.WriteLine($"Your final score is {CalculateScore()}, with {correctCount} correct answers.\n");
                     // reset correctCount to 0 if got wrong answer.
                     correctCount = 0;
+                    scoreBooster = 0;
                     OfferContinue();
                 }
             }
@@ -160,11 +163,36 @@ namespace MathForFun
         }
         void GreetPlayer()
         {
-            Console.WriteLine($"Thanks for playing my MathForFun game!\n\nCreated by Daniel Aguirre\n\nThe rules are simple, I'll provide you with \nrandom addition problems, and you try to answer\nas many as you can correctly.\n\nThe difficulty will increase as your score\nincreases.If you get an answer wrong you can\ncontinue playing but your score will reset.\n\n");
+            Console.WriteLine($"Thanks for playing my MathForFun game!\n\nCreated by Daniel Aguirre\n\nThe rules are simple, I'll provide you with \nrandom math problems, and you try to answer\nas many as you can correctly.\n\nThe difficulty will increase as your score\nincreases.If you get an answer wrong you can\ncontinue playing but your score will reset.\n\nYour score will be determined by\nyour difficulty and the problem presented.\n\nPlease press any key to continue.");
+            ClearAfterReadKey();
+            OfferQuestionType(); 
+            ClearAfterReadKey();
             OfferDifficulty();
-            Console.WriteLine($"\n\nYou have selected the difficulty: {currentDifficulty}\nPress any key to continue.");
-            Console.ReadKey();
+            ClearAfterReadKey();
         }
+        void OfferQuestionType()
+        {
+            Console.WriteLine("Please select a category by entering the\ncorresponding number.\n\n1) Addition\n2) Subtraction\n");
+            while (questionType == QuestionGenerator.QuestionType.None)
+            {
+                switch (Console.ReadKey().KeyChar)
+                {
+                    case '1':
+                        questionType = QuestionGenerator.QuestionType.Addition;
+                        break;
+                    case '2':
+                        questionType = QuestionGenerator.QuestionType.Subtraction;
+                        break;
+                    // if default, invalid response, so no difficulty set which will cause while loop to re-run.
+                    default:
+                        Console.WriteLine("Invalid response, Please enter a number 1-3.");
+                        ClearAfterReadKey();
+                        break;
+                }
+            }
+            Console.WriteLine($"\n\nYou have selected the category: {questionType}\nPress any key to continue.");
+        }
+
         void OfferDifficulty()
         {
             // use while loop to offer difficulty again if player inputs invalid entry. This prevents user from continuing without setting a difficulty.
@@ -185,11 +213,16 @@ namespace MathForFun
                     // if default, invalid response, so no difficulty set which will cause while loop to re-run.
                     default:
                         Console.WriteLine("Invalid response, Please enter a number 1-3.");
-                        Console.ReadKey();
-                        Console.Clear();
+                        ClearAfterReadKey();
                         break;
                 }
             }
+            Console.WriteLine($"\n\nYou have selected the difficulty: {currentDifficulty}\nPress any key to continue.");
+            }
+        void ClearAfterReadKey()
+        {
+            Console.ReadKey();
+            Console.Clear();
         }
         void ShowLogo()
         {
