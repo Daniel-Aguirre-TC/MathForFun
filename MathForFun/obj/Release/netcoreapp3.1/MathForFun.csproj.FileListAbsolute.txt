@@ -10,3 +10,4 @@ C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\Ma
 C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.dll
 C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.pdb
 C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.genruntimeconfig.cache
+C:\Users\Second-Desktop\repos\MathForFun\MathForFun\obj\Release\netcoreapp3.1\MathForFun.csproj.AssemblyReference.cache

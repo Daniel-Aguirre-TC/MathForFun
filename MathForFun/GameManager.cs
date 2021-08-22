@@ -167,15 +167,13 @@ namespace MathForFun
             Console.WriteLine($"Thanks for playing my MathForFun game!\n\nCreated by Daniel Aguirre\n\nThe rules are simple, I'll provide you with \nrandom math problems, and you try to answer\nas many as you can correctly.\n\nThe difficulty will increase as your score\nincreases.If you get an answer wrong you can\ncontinue playing but your score will reset.\n\nYour score will be determined by\nyour difficulty and the problem presented.\n\nPlease press any key to continue.");
             ClearAfterReadKey();
             OfferQuestionType(); 
-            ClearAfterReadKey();
             OfferDifficulty();
-            ClearAfterReadKey();
         }
         void OfferQuestionType()
         {
             while (questionType == QuestionGenerator.QuestionType.None)
             {
-                Console.WriteLine("Please select a category by entering the\ncorresponding number.\n\n1) Addition\n2) Subtraction\n");
+                Console.WriteLine("Please select a category by entering the\ncorresponding number.\n\n1) Addition\n2) Subtraction\n3) Multiplication\n");
                 switch (Console.ReadKey().KeyChar)
                 {
                     case '1':
@@ -183,6 +181,9 @@ namespace MathForFun
                         break;
                     case '2':
                         questionType = QuestionGenerator.QuestionType.Subtraction;
+                        break;
+                    case '3':
+                        questionType = QuestionGenerator.QuestionType.Multiplication;
                         break;
                     // if default, invalid response, so no difficulty set which will cause while loop to re-run.
                     default:
@@ -192,6 +193,7 @@ namespace MathForFun
                 }
             }
             Console.WriteLine($"\n\nYou have selected the category: {questionType}\nPress any key to continue.");
+            ClearAfterReadKey();
         }
         void OfferDifficulty()
         {
@@ -218,7 +220,8 @@ namespace MathForFun
                 }
             }
             Console.WriteLine($"\n\nYou have selected the difficulty: {currentDifficulty}\nPress any key to continue.");
-            }
+            ClearAfterReadKey();
+        }
         void ClearAfterReadKey()
         {
             Console.ReadKey();

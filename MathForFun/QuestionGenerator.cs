@@ -6,7 +6,7 @@ namespace MathForFun
 {
     public static class QuestionGenerator
     {
-        public enum QuestionType { None, Addition, Subtraction }
+        public enum QuestionType { None, Addition, Subtraction, Multiplication }
         // char opperator is updated when DisplayQuestion() is called.
         public static char opperator;
         // numOne and numTwo for current problem
@@ -52,6 +52,8 @@ namespace MathForFun
                     return numOne + numTwo;
                 case QuestionType.Subtraction:
                     return numOne - numTwo;
+                case QuestionType.Multiplication:
+                    return numOne * numTwo;                  
                 default:
                     Console.WriteLine("Error with returning CorrectAnswer from NewProblem() due to no matching QuestionType. Will Return 0.");
                     return 0;
@@ -71,6 +73,9 @@ namespace MathForFun
                 case QuestionType.Subtraction:
                     opperator = '-';
                     break;
+                case QuestionType.Multiplication:
+                    opperator = '*';
+                    break;
                 default:
                     Console.WriteLine("Error with determining opperator. No valid QuestionType submitted for DisplayProblem(). Returning +");
                     opperator = '+';
@@ -85,10 +90,12 @@ namespace MathForFun
             var random = new Random();
             numOne = random.Next(firstNumberMin, firstNumberMax);
             numTwo = random.Next(secondNumberMin, secondNumberMax);
-            // if addition problem is the same as the previous problem.
+            
             switch(questionType)
             {
+                // if category is addition or multiplication and it's the same as last problem, generate new numbers.
                 case QuestionType.Addition:
+                case QuestionType.Multiplication:
                     if ((numOne == lastNumOne && numTwo == lastNumTwo) || (numOne == lastNumTwo && numTwo == lastNumOne))
                     {
                         SetNumbers(QuestionType.Addition, firstNumberMin, firstNumberMax, secondNumberMin, secondNumberMax);
@@ -99,8 +106,9 @@ namespace MathForFun
                         lastNumTwo = numTwo;
                     }
                     break;
+                // if category is subtration
                 case QuestionType.Subtraction:
-                    // prevent duplicate question from last one, and prevent negative answers.
+                    // prevent duplicate question from last one, and prevent negative answers, and prevent having two questions in a row with same answer.
                     if ((numTwo > numOne) || (numOne == lastNumOne && numTwo == lastNumTwo) || (numOne - numTwo == lastNumOne - lastNumTwo))
                     { SetNumbers(QuestionType.Subtraction, firstNumberMin, firstNumberMax, secondNumberMin, secondNumberMax); }
                     else
