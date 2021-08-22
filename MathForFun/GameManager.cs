@@ -6,14 +6,12 @@ namespace MathForFun
 {
     class GameManager
     {
-        // difficulty will adjust how often the number range increases, and by how much.
+        // difficulty will adjust how often the number range increases, and by how much. Score is also dependent on difficulty.
         enum Difficulty {None, Easy, Medium, Hard };
         // setting difficulty to none until player selects a difficulty.
         Difficulty currentDifficulty = Difficulty.None;
-
-        // 
+        // stillPlaying is used to keep while loop running for gameplay
         bool stillPlaying;
-
         // numbers below are starting point for min/max values of opperands. These are increased throughout gameplay.
         int firstMinNumber = 0;
         int firstMaxNumber = 1;
@@ -23,6 +21,9 @@ namespace MathForFun
         int currentAnswer;
         // correctCount is used to display score. Increases by one per correct answer.
         int correctCount;
+        // scoreBooster will increase the score the higher the sum of currentAnswer is. This allows you to get more
+        // points for more difficult questions, not just the difficulty selected.
+        int scoreBooster = 0;
 
         // GameManager Constructor is called in Main at startup. 
         public GameManager()
@@ -46,6 +47,7 @@ namespace MathForFun
                 // if result is correct
                 if (result == currentAnswer)
                 {
+                    scoreBooster += Convert.ToInt32(Math.Floor(currentAnswer / 10m));
                     // increase correctCount, notify player, offer continue.
                     correctCount++;
 
@@ -76,11 +78,11 @@ namespace MathForFun
             switch (currentDifficulty)
             {
                 case Difficulty.Easy:
-                    return correctCount;
+                    return correctCount + scoreBooster;
                 case Difficulty.Medium:
-                    return correctCount * 2;
+                    return (correctCount * 2) + scoreBooster;
                 case Difficulty.Hard:
-                    return correctCount * 3;
+                    return (correctCount * 3) + scoreBooster;
                 default:
                     Console.WriteLine("Error checking difficulty to calculate score. Returning score based on Easy Difficulty.");
                     return correctCount;
