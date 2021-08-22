@@ -14,10 +14,10 @@ namespace MathForFun
         // stillPlaying is used to keep while loop running for gameplay
         bool stillPlaying;
         // numbers below are starting point for min/max values of opperands. These are increased throughout gameplay.
-        int firstMinNumber = 0;
-        int firstMaxNumber = 5;
-        int secondMinNumber = 1;
-        int secondMaxNumber = 5;   
+        int firstMinNumber;
+        int firstMaxNumber;
+        int secondMinNumber;
+        int secondMaxNumber;   
         // stores the correct answer for the current question
         int currentAnswer;
         // correctCount is used to display score. Increases by one per correct answer.
@@ -39,7 +39,13 @@ namespace MathForFun
                 CheckAnswer();
             }
         }
-
+        void OfferChangeSettings()
+        {
+            questionType = QuestionGenerator.QuestionType.None;
+            currentDifficulty = Difficulty.None;
+            OfferQuestionType();
+            OfferDifficulty();
+        }
         void CheckAnswer()
         {
             // if can parse set result
@@ -61,7 +67,7 @@ namespace MathForFun
                 else
                 {
                     // notify player they lost and offer continue.
-                    Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n\n{QuestionGenerator.numOne} {QuestionGenerator.opperator} {QuestionGenerator.numTwo} = {currentAnswer}.\n");
+                    Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n\n{QuestionGenerator.numOne} {QuestionGenerator.currentOperator} {QuestionGenerator.numTwo} = {currentAnswer}.\n");
                     Console.WriteLine($"Your final score is {CalculateScore()}, with {correctCount} correct answers.\n");
                     // reset correctCount to 0 if got wrong answer.
                     correctCount = 0;
@@ -101,6 +107,11 @@ namespace MathForFun
                 case 'y':
                 case (char)ConsoleKey.Enter:
                 case (char)ConsoleKey.Spacebar:
+                    if (correctCount == 0)
+                    {
+                        // set questionType and currentDifficulty back to none so that we can offer new settings if correctCount == 0
+                        OfferChangeSettings();
+                    }
                     break;
                 // if n then set stillPlaying to false to break gameplay loop.
                 case 'n':
@@ -125,8 +136,17 @@ namespace MathForFun
                     {
                         firstMinNumber++;
                         secondMinNumber++;
-                        secondMaxNumber++; 
+                        secondMaxNumber++;
+                        if (questionType == QuestionGenerator.QuestionType.Division)
+                        { 
+                            // increase max number by more on Division
+                            firstMaxNumber += 5;
+                            // undo increase to second min Number to avoid limiting division options.
+                            secondMinNumber--;
+                        }
+
                     }
+
                     break;
                 // if medium increase number ranges as shown below every turn and every three turns
                 case Difficulty.Medium:
@@ -138,6 +158,13 @@ namespace MathForFun
                         firstMaxNumber++;
                         secondMinNumber+=2;
                         secondMaxNumber+=2;
+                        if (questionType == QuestionGenerator.QuestionType.Division)
+                        {
+                            // increase max number by more on Division
+                            firstMaxNumber += 10;
+                            // don't increase min Number to avoid limiting division options.
+                            secondMinNumber-= 2;
+                        }
                     }
                     break;
                 // if hard increase number ranges as shown below every turn and every 2 turns
@@ -152,6 +179,13 @@ namespace MathForFun
                         firstMinNumber+=2;
                         secondMinNumber += 2;
                         secondMaxNumber += 4;
+                        if (questionType == QuestionGenerator.QuestionType.Division)
+                        {
+                            // increase max number by more on Division
+                            firstMaxNumber += 15;
+                            // don't increase min Number to avoid limiting division options.
+                            secondMinNumber -= 4;
+                        }
                     }
                     break;
                 // default shouldn't be called, if so then difficulty was never set.
@@ -166,14 +200,14 @@ namespace MathForFun
         {
             Console.WriteLine($"Thanks for playing my MathForFun game!\n\nCreated by Daniel Aguirre\n\nThe rules are simple, I'll provide you with \nrandom math problems, and you try to answer\nas many as you can correctly.\n\nThe difficulty will increase as your score\nincreases.If you get an answer wrong you can\ncontinue playing but your score will reset.\n\nYour score will be determined by\nyour difficulty and the problem presented.\n\nPlease press any key to continue.");
             ClearAfterReadKey();
-            OfferQuestionType(); 
-            OfferDifficulty();
+            OfferChangeSettings();
         }
         void OfferQuestionType()
         {
             while (questionType == QuestionGenerator.QuestionType.None)
             {
-                Console.WriteLine("Please select a category by entering the\ncorresponding number.\n\n1) Addition\n2) Subtraction\n3) Multiplication\n");
+                Console.Clear();
+                Console.WriteLine("Please select a category by entering the\ncorresponding number.\n\n1) Addition\n2) Subtraction\n3) Multiplication\n4) Division\n");
                 switch (Console.ReadKey().KeyChar)
                 {
                     case '1':
@@ -184,6 +218,9 @@ namespace MathForFun
                         break;
                     case '3':
                         questionType = QuestionGenerator.QuestionType.Multiplication;
+                        break;
+                    case '4':
+                        questionType = QuestionGenerator.QuestionType.Division;
                         break;
                     // if default, invalid response, so no difficulty set which will cause while loop to re-run.
                     default:
@@ -197,6 +234,8 @@ namespace MathForFun
         }
         void OfferDifficulty()
         {
+            // assign initial values for number range at start of game
+
             // use while loop to offer difficulty again if player inputs invalid entry. This prevents user from continuing without setting a difficulty.
             while (currentDifficulty == Difficulty.None)
             {
@@ -205,12 +244,38 @@ namespace MathForFun
                 {
                     case '1':
                         currentDifficulty = Difficulty.Easy;
+                        // assign initial number range based on difficulty. This will be updated as gameplay continues but will be reset if we get a wrong answer.
+                        firstMinNumber = 0;
+                        firstMaxNumber = 5;
+                        secondMinNumber = 1;
+                        secondMaxNumber = 5;
+                        if (questionType == QuestionGenerator.QuestionType.Division)
+                        {
+                            firstMaxNumber += 25;
+                        }
                         break;
                     case '2':
                         currentDifficulty = Difficulty.Medium;
+                        firstMinNumber = 0;
+                        firstMaxNumber = 10;
+                        secondMinNumber = 1;
+                        secondMaxNumber = 10;
+                        if (questionType == QuestionGenerator.QuestionType.Division)
+                        {
+                            firstMaxNumber += 50;
+                        }
                         break;
                     case '3':
                         currentDifficulty = Difficulty.Hard;
+                        currentDifficulty = Difficulty.Medium;
+                        firstMinNumber = 0;
+                        firstMaxNumber = 15;
+                        secondMinNumber = 1;
+                        secondMaxNumber = 15;
+                        if (questionType == QuestionGenerator.QuestionType.Division)
+                        {
+                            firstMaxNumber += 75;
+                        }
                         break;
                     // if default, invalid response, so no difficulty set which will cause while loop to re-run.
                     default:
