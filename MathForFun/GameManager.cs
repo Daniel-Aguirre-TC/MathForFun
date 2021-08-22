@@ -48,7 +48,8 @@ namespace MathForFun
                 {
                     // increase correctCount, notify player, offer continue.
                     correctCount++;
-                    Console.WriteLine($"\nYou answered correctly! Your score is now: {correctCount}.\n");
+
+                    Console.WriteLine($"\nYou answered correctly! Your score is now: {CalculateScore()}.\n\nYour total correct answers so far is {correctCount}\n");
                     IncreaseNumberRange();
                     OfferContinue();
                 }
@@ -57,7 +58,7 @@ namespace MathForFun
                 {
                     // notify player they lost and offer continue.
                     Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n\n{QuestionGenerator.numOne} + {QuestionGenerator.numTwo} = {currentAnswer}.\n");
-                    Console.WriteLine($"Your final score is {correctCount}.\n");
+                    Console.WriteLine($"Your final score is {CalculateScore()}, with {correctCount} correct answers.\n");
                     // reset correctCount to 0 if got wrong answer.
                     correctCount = 0;
                     OfferContinue();
@@ -68,6 +69,21 @@ namespace MathForFun
             {
                 Console.WriteLine($"Invalid entry. Please enter a number.");
                 CheckAnswer();
+            }
+        }
+        int CalculateScore()
+        {
+            switch (currentDifficulty)
+            {
+                case Difficulty.Easy:
+                    return correctCount;
+                case Difficulty.Medium:
+                    return correctCount * 2;
+                case Difficulty.Hard:
+                    return correctCount * 3;
+                default:
+                    Console.WriteLine("Error checking difficulty to calculate score. Returning score based on Easy Difficulty.");
+                    return correctCount;
             }
         }
         void OfferContinue()
