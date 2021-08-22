@@ -48,7 +48,7 @@ namespace MathForFun
                 {
                     // increase correctCount, notify player, offer continue.
                     correctCount++;
-                    Console.WriteLine($"\nYou answered correctly! Your score is now: {correctCount}.");
+                    Console.WriteLine($"\nYou answered correctly! Your score is now: {correctCount}.\n");
                     IncreaseNumberRange();
                     OfferContinue();
                 }
@@ -56,7 +56,7 @@ namespace MathForFun
                 else
                 {
                     // notify player they lost and offer continue.
-                    Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n{QuestionGenerator.numOne} + {QuestionGenerator.numTwo} = {currentAnswer}.\n");
+                    Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n\n{QuestionGenerator.numOne} + {QuestionGenerator.numTwo} = {currentAnswer}.\n");
                     Console.WriteLine($"Your final score is {correctCount}.\n");
                     OfferContinue();
                 }
@@ -80,7 +80,7 @@ namespace MathForFun
                     break;
                 // if n then set stillPlaying to false to break gameplay loop.
                 case 'n':
-                    stillPlaying = false;
+                    CloseApplication();
                     break;
                 // if anything else then invalid entry and offer continue again.
                 default:
@@ -189,10 +189,18 @@ namespace MathForFun
             Console.WriteLine("|     \\   |     |    |    |    \\|");
             Console.WriteLine("|      \\  |     |  __|__  |     |");
 
-            Console.WriteLine("\n\nPress Any Key To Begin.");
+            // will say press any key to begin or exit depending on if starting or ending game.
+            string beginOrExit = stillPlaying ? "Begin" : "Exit";
+            Console.WriteLine($"\n\nPress Any Key To {beginOrExit}.");
             Console.ReadKey();
             Console.Clear();
         }
-
+        void CloseApplication()
+        {
+            stillPlaying = false;
+            Console.Clear();
+            Console.WriteLine("Thank you for taking the time to play my game!\n\n -Daniel");
+            ShowLogo();
+        }
     }
 }
