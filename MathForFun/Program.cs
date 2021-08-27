@@ -6,8 +6,11 @@ namespace MathForFun
     {
         static void Main(string[] args)
         {
-            Console.SetWindowSize(50, 25);
-            GameManager gameManager = new GameManager();
+            Console.SetWindowSize(100, 25);
+            GameManager.StartGame();
+
+            
+
         }
     }
 }
