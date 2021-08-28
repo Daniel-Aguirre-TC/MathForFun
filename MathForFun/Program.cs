@@ -9,7 +9,6 @@ namespace MathForFun
             Console.SetWindowSize(100, 25);
             GameManager.StartGame();
 
-            
 
         }
     }

@@ -6,6 +6,7 @@ namespace MathForFun
 {
     public static class InputHandler
     {
+
         // Ask the user how many players will be enjoying our game.
         public static void GetNumberOfPlayers()
         {
@@ -55,9 +56,19 @@ namespace MathForFun
             {
                 Console.Clear();
                 ConsoleHandler.CenterMidScreenAndPrintArray(new string[] { "Player One, please enter your name." });
+                Console.Write("".PadLeft(Console.WindowWidth / 2));
                 playerOneName = Console.ReadLine();
                 // if playerOneName has been changed will check name, otherwise back through while loop to ask name again
-                if(playerOneName != "")
+                if (playerOneName.Length > 15)
+                {
+                    Console.Clear();
+                    ConsoleHandler.CenterMidScreenAndPrintArray(new string[] {
+                        "I'm sorry, this game is not designed to handle a name that long.",
+                        "Please enter a name less than 15 characters long." });
+                    playerOneName = "";
+                    ConsoleHandler.ClearAfterReadKey();
+                }
+                if (playerOneName != "")
                 {
                     Console.Clear();
                     ConsoleHandler.CenterMidScreenAndPrintArray(new string[] { $" \"{playerOneName}\" has been entered for Player One.\n", "Is this correct? y/n" });
@@ -85,7 +96,17 @@ namespace MathForFun
                 {
                     Console.Clear();
                     ConsoleHandler.CenterMidScreenAndPrintArray(new string[] { "Player Two, it's your turn! Please enter your name." });
+                    Console.Write("".PadLeft(Console.WindowWidth / 2));
                     playerTwoName = Console.ReadLine();
+                    if (playerTwoName.Length > 15)
+                    {
+                        Console.Clear();
+                        ConsoleHandler.CenterMidScreenAndPrintArray(new string[] {
+                        "I'm sorry, this game is not designed to handle a name that long.",
+                        "Please enter a name less than 15 characters long." });
+                        playerTwoName = "";
+                        ConsoleHandler.ClearAfterReadKey();
+                    }
                     if (playerTwoName != "")
                     {
                         Console.Clear();
@@ -112,7 +133,7 @@ namespace MathForFun
         // Ask the user what type of math question to present then assign questionType
         public static void GetMathCategory()
         {
-            while (GameManager.questionType == QuestionGenerator.QuestionType.None)
+            while (GameManager.questionType == GameManager.QuestionType.None)
             {
                 Console.Clear();
                 ConsoleHandler.CenterMidScreenAndPrintArray(new string[] {
@@ -126,16 +147,20 @@ namespace MathForFun
                 switch (Console.ReadKey().KeyChar)
                 {
                     case '1':
-                        GameManager.questionType = QuestionGenerator.QuestionType.Addition;
+                        GameManager.questionType = GameManager.QuestionType.Addition;
+                        ConsoleHandler.currentOperator = "+";
                         break;
                     case '2':
-                        GameManager.questionType = QuestionGenerator.QuestionType.Subtraction;
+                        GameManager.questionType = GameManager.QuestionType.Subtraction;
+                        ConsoleHandler.currentOperator = "-";
                         break;
                     case '3':
-                        GameManager.questionType = QuestionGenerator.QuestionType.Multiplication;
+                        GameManager.questionType = GameManager.QuestionType.Multiplication;
+                        ConsoleHandler.currentOperator = "x";
                         break;
                     case '4':
-                        GameManager.questionType = QuestionGenerator.QuestionType.Division;
+                        GameManager.questionType = GameManager.QuestionType.Division;
+                        ConsoleHandler.currentOperator = "/";
                         break;
                     // if default, invalid response, so no difficulty set which will cause while loop to re-run.
                     default:
@@ -174,7 +199,7 @@ namespace MathForFun
                         GameManager.firstMaxNumber = 5;
                         GameManager.secondMinNumber = 1;
                         GameManager.secondMaxNumber = 5;
-                        if (GameManager.questionType == QuestionGenerator.QuestionType.Division)
+                        if (GameManager.questionType == GameManager.QuestionType.Division)
                         {
                             GameManager.firstMaxNumber += 25;
                         }
@@ -185,19 +210,18 @@ namespace MathForFun
                         GameManager.firstMaxNumber = 10;
                         GameManager.secondMinNumber = 1;
                         GameManager.secondMaxNumber = 10;
-                        if (GameManager.questionType == QuestionGenerator.QuestionType.Division)
+                        if (GameManager.questionType == GameManager.QuestionType.Division)
                         {
                             GameManager.firstMaxNumber += 50;
                         }
                         break;
                     case '3':
                         GameManager.currentDifficulty = GameManager.Difficulty.Hard;
-                        GameManager.currentDifficulty = GameManager.Difficulty.Medium;
                         GameManager.firstMinNumber = 0;
                         GameManager.firstMaxNumber = 15;
                         GameManager.secondMinNumber = 1;
                         GameManager.secondMaxNumber = 15;
-                        if (GameManager.questionType == QuestionGenerator.QuestionType.Division)
+                        if (GameManager.questionType == GameManager.QuestionType.Division)
                         {
                             GameManager.firstMaxNumber += 75;
                         }
@@ -215,7 +239,7 @@ namespace MathForFun
             Console.Clear();
             ConsoleHandler.CenterMidScreenAndPrintArray(new string[]
             {
-                "You have selected the difficulty: {currentDifficulty}\n", "Press y/n to confirm."
+                $" You have selected the difficulty: {GameManager.currentDifficulty}\n", "Press y/n to confirm."
             });
             switch (Console.ReadKey().KeyChar)
             {
@@ -233,16 +257,16 @@ namespace MathForFun
         // Get number of players, names, category, and difficulty
         public static void OfferChangeSettings()
         {
-            GameManager.questionType = QuestionGenerator.QuestionType.None;
+            GameManager.playerCount = GameManager.NumberOfPlayers.None;
+            GameManager.questionType = GameManager.QuestionType.None;
             GameManager.currentDifficulty = GameManager.Difficulty.None;
             GetNumberOfPlayers();
             GetPlayerNames();
             GetMathCategory();
             OfferDifficulty();
         }
-      
-
-        /*
+                      
+        // Offer to restart the game, or close application if declined.
         public static void OfferContinue()
         {
             Console.Clear();
@@ -272,56 +296,73 @@ namespace MathForFun
                     break;
             }
         }
-
-        */
-                     // return the players score, logic dependant on difficulty and the sum of the opperands for the problem solved.
-
-
-        /*
-                void CheckAnswer()
+        
+        // check if answer is correct and call next steps based on outcome.
+        public static void CheckAnswer()
+        {
+            Console.Write("".PadLeft(Console.WindowWidth / 2));
+            // if can parse set result
+            if (int.TryParse(Console.ReadLine(), out int result))
+            {
+                // if result is correct
+                if (result == GameManager.currentAnswer)
                 {
-                    // if can parse set result
-                    if (int.TryParse(Console.ReadLine(), out int result))
+                    // score booster is based on numOne + numTwo so that subtraction score increases with higher numbers even if difference is  low number.
+                    GameManager.scoreBooster += Convert.ToInt32(Math.Floor((GameManager.numOne + GameManager.numTwo) / 10m));
+                    // if two player
+                    if (GameManager.playerCount == GameManager.NumberOfPlayers.Two)
                     {
-                        // if result is correct
-                        if (result == currentAnswer)
+                        // if it's player one's turn during a two player game
+                        if (GameManager.turnCount % 2 != 0)
                         {
-                            // score booster is based on numOne + numTwo so that subtraction score increases with higher numbers even if difference is  low number.
-                            scoreBooster += Convert.ToInt32(Math.Floor((QuestionGenerator.numOne + QuestionGenerator.numTwo) / 10m));
-                            // increase correctCount, notify player, offer continue.
-                            correctCount++;
-                            // Notify user their answer was correct, increase Range of possible opperands for next question, offer continue playing
-                            Console.WriteLine($"\nYou answered correctly! Your score is now: {CalculateScore()}.\n\nYour total correct answers so far is {correctCount}\n");
-                            IncreaseNumberRange();
-                            OfferContinue();
+                            ConsoleHandler.PrintCorrectAnswerReceived(ConsoleHandler.playerOneName);
+                            ConsoleHandler.playerOneScore = GameManager.CalculateScore(ConsoleHandler.playerOneScore);
                         }
-                        // else means answer given was incorrect
                         else
+                        // else if it's player two's turn
                         {
-                            // notify player they lost and offer continue.
-                            Console.WriteLine($"\nI'm sorry, {result} is not the correct answer.\n\n{QuestionGenerator.numOne} {QuestionGenerator.currentOperator} {QuestionGenerator.numTwo} = {currentAnswer}.\n");
-                            Console.WriteLine($"Your final score is {CalculateScore()}, with {correctCount} correct answers.\n");
-                            // reset correctCount to 0 if got wrong answer.
-                            correctCount = 0;
-                            scoreBooster = 0;
-                            OfferContinue();
+                            ConsoleHandler.PrintCorrectAnswerReceived(ConsoleHandler.playerTwoName);
+                            ConsoleHandler.playerTwoScore = GameManager.CalculateScore(ConsoleHandler.playerTwoScore);
+                            //increase number range after player twos turn since it is now been both players turns.
+                            GameManager.IncreaseNumberRange();
                         }
                     }
-                    // else the parse failed so CheckAnswer again to get a new entry
+                    // if correct answer for a one player game
                     else
                     {
-                        Console.WriteLine($"Invalid entry. Please enter a number.");
-                        CheckAnswer();
+                        ConsoleHandler.PrintCorrectAnswerReceived(ConsoleHandler.playerOneName);
+                        ConsoleHandler.playerOneScore = GameManager.CalculateScore(ConsoleHandler.playerOneScore);
+                        GameManager.IncreaseNumberRange();
                     }
+                    
                 }
-                // increase number range that problems are created from
+                // else incorrect answer received
+                else
+                {
+                    Console.Clear();
+                    // tell player wrong answer and show final scores
+                    ConsoleHandler.CenterMidScreenAndPrintArray(new string[] { "I'm sorry, the correct answer is:\n", $" {GameManager.numOne} {ConsoleHandler.currentOperator} {GameManager.numTwo} = {GameManager.currentAnswer}\n" });
+                    if (GameManager.playerCount == GameManager.NumberOfPlayers.Two)
+                    {
+                        ConsoleHandler.CenterAndPrintArray(new string[] { $"{ConsoleHandler.playerOneName}'s Final Score: {ConsoleHandler.playerOneScore}", $"{ConsoleHandler.playerTwoName}'s Final Score: {ConsoleHandler.playerTwoScore}" });
+                    }
+                    else Console.WriteLine(ConsoleHandler.CenterText($"{ConsoleHandler.playerOneName}'s Final Score: {ConsoleHandler.playerOneScore}"));
+                    Console.ReadLine();
+                    // offer continue playing
+                    OfferContinue();      
+                }
 
+                // increase turn count now that turn is over.
+                GameManager.turnCount++;
 
-
-        
-
-                */
-
-
+            }
+            // else the parse failed so CheckAnswer again to get a new entry
+            else
+            {
+                Console.WriteLine($"Invalid entry. Please enter a number.");
+                CheckAnswer();
+            }
+        }
+                
     }
 }

@@ -14,9 +14,7 @@ namespace MathForFun
         // numOne and numTwo for current problem
         public static int numOne = 0;
         public static int numTwo = 0;
-        // lastNumOne and lastNumTwo used to prevent showing the same answer twice.
-        static int lastNumOne;
-        static int lastNumTwo;
+
         // List of randomly selected strings to display before presenting question.
         static List<string> questionText = new List<string>()
         {
@@ -48,6 +46,9 @@ namespace MathForFun
         // Methods //
 
         // Return a new equation to GameManager based on the category passed, and the number ranges provided.
+        
+        
+        /*
         static public int NewProblem(QuestionType category, int numOneMinValue, int numOneMaxValue, int numTwoMinValue, int numTwoMaxValue)
         {
             SetNumbers(category, numOneMinValue, numOneMaxValue, numTwoMinValue, numTwoMaxValue);
@@ -68,39 +69,9 @@ namespace MathForFun
             }   
         }
         // Takes info from NewProblem() and uses it to generate a problem.
-        static void SetNumbers(QuestionType questionType, int firstNumberMin, int firstNumberMax, int secondNumberMin, int secondNumberMax)
-        {
-            var random = new Random();
-            numOne = random.Next(firstNumberMin, firstNumberMax);
-            numTwo = random.Next(secondNumberMin, secondNumberMax);
+        
 
-            switch (questionType)
-            {
-                // if category is addition or multiplication and it's the same as last problem, generate new numbers.
-                case QuestionType.Addition:
-                case QuestionType.Multiplication:
-                    if ((numOne == lastNumOne && numTwo == lastNumTwo) || (numOne == lastNumTwo && numTwo == lastNumOne))
-                    {
-                        SetNumbers(questionType, firstNumberMin, firstNumberMax, secondNumberMin, secondNumberMax);
-                    }
-                    else { UpdateLastNums(); }
-                    break;
-                // if category is subtration
-                case QuestionType.Subtraction:
-                    // prevent duplicate question from last one, and prevent negative answers, and prevent having two questions in a row with same answer.
-                    if (numTwo > numOne || (numOne == lastNumOne && numTwo == lastNumTwo) || numOne - numTwo == lastNumOne - lastNumTwo)
-                    { SetNumbers(questionType, firstNumberMin, firstNumberMax, secondNumberMin, secondNumberMax); }
-                    else { UpdateLastNums(); }
-                    break;
-                // if category is Divison and is same numTwo as last problem or modulus != 0 (to avoid decimals), or numTwo is 1 (too easy) or numOne is less than numTwo
-                case QuestionType.Division:
-                    if (numTwo == lastNumTwo || numTwo == 1 || numOne % numTwo != 0 || numOne < numTwo)
-                    { SetNumbers(questionType, firstNumberMin, firstNumberMax, secondNumberMin, secondNumberMax); }
-                    else { UpdateLastNums(); }
-                    break;
-            }
-
-        }
+        
         // Print the NewProblem() to the console screen
         static void DisplayProblem(QuestionType questionType)
         {
@@ -147,11 +118,7 @@ namespace MathForFun
             }
         }
         // store the LastNums from previous problem to avoid duplicate equations.
-        static void UpdateLastNums()
-        {
-            lastNumOne = numOne;
-            lastNumTwo = numTwo;
-        }
 
+        */
     }
 }
